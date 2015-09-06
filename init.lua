@@ -1,6 +1,10 @@
 
 luabackup = luabackup or { } 
 
+if luabackup.incremental == nil then
+	luabackup.incremental = false
+end
+
 require "luabackup/oo"
 require "luabackup/shell-io"
 require "luabackup/log"

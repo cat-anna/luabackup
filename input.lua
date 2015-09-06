@@ -47,6 +47,11 @@ function InputInterface:init(config)
 		self.name = config.name
 	end
 	self.config = config
+	if config.incremental ~= nil then
+		self.incremental = config.incremental
+	else	
+		self.incremental  = luabackup.incremental
+	end
 end
 
 function InputInterface:getName()

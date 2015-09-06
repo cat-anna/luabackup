@@ -45,12 +45,27 @@ function Input_git:process_repo(path)
 	local repoinfo = shell.linesOf(cmd)
 	local repodate = repoinfo[1]
 	
-	if prvstate.changedate ~= repodate or luabackup.debug then
+	local add = false
+	
+	if prvstate.changedate ~= repodate then
 		addstate(console.yellow, "changed")
-		if not luabackup.debug then
-			prvstate.changedate = repodate
-		end
-		
+		prvstate.changedate = repodate
+		add = true
+	else
+		addstate(console.green, "unchanged")
+	end
+	
+	if luabackup.debug then
+		addstate(console.red, "debug")
+		add = true
+	end
+	
+	if not self.incremental then
+		addstate(console.yellow, "date ignored")
+		add = true
+	end
+	
+	if add then
 		local name = ""
 		
 		local excluded_names = {
@@ -76,8 +91,6 @@ function Input_git:process_repo(path)
 			path = path .. "/",
 			name = name
 		}
-	else
-		addstate(console.green, "unchanged")
 	end
 	
 	log:info(self, "Repository status: ", path, " -> ", states)

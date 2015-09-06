@@ -146,6 +146,12 @@ function BackupEngine:start()
 	if luabackup.debug then
 		log:warning(NameString, " executed in debug mode!")
 	end
+	
+	if luabackup.incremental then
+		log:info("Incremental mode is on")
+	else
+		log:info("Incremental mode is off")
+	end
 
 	log:warning("Default pipeline: " .. pipelines:getDefaultPipeline())
     log:info "Backup started"

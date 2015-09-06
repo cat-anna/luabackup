@@ -4,6 +4,8 @@ require "luabackup"
 local d = os.date("*t")
 local fn = string.format("%04d%02d%02d%02d%02d%02d", d.year, d.month, d.day, d.hour, d.min, d.sec)	
 
+luabackup.incremental = incremental
+
 backup:init("testsettings.lua")
 pipelines:setDefaultPipeline("tar-gzip-ccrypt")
 

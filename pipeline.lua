@@ -21,7 +21,7 @@ function Executor:execute(files, fname)
 	local i, v
 	for i,v in ipairs(self.stages) do
 		self.stage_index = i
-		log:info(self, "Processing ", v, " [files: " .. #files .. "]")
+		log:info(self, "Processing ", v, "[files: " .. #files .. "]")
 		files, fname = v:execute(files, fname)
 	end
 
