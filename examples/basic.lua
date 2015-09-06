@@ -23,7 +23,10 @@ input:add(Input_git:new{
 output:add(Output_fs:new{
 	name="local",
 	dir="~/backup/" .. fn .. "/",
-	mode = { backup = "y", log = "y" }
+	mode = { backup = "y", log = "y" },
+	triggers = {
+		logFile = function(f) log:info("logfile " .. f); end,
+	},
 })
 
 backup:start()

@@ -37,7 +37,7 @@ function Output:putLogFile(file)
 		local inst = v.instance
 		if inst:isLogSink() then
 			log:info(inst, "Putting log file '" .. file .. "'")
-			inst:put(file)
+			inst:putLog(file)
 		end
 	end
 end
@@ -89,4 +89,7 @@ function OutputInterface:getName()
 end
 
 function OutputInterface:put(file)
+end
+
+function OutputInterface:putLog(file)
 end
