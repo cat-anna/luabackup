@@ -4,6 +4,28 @@
 local shell = { }
 _G["shell"] = shell
 
+function shell.start(cmd, argsdict, argtable, ...)
+	local t = { cmd }
+	
+	for k,v in pairs(argsdict or {}) do
+		if k:len() > 1 then
+			t[#t + 1] = "-" .. k;
+		else
+			t[#t + 1] = "--" .. k;
+		end
+		t[#t + 1] = v
+	end
+	
+	for i,v in ipairs(argtable or {}) do
+		t[#t + 1] = v
+	end	
+	
+	for i,v in ipairs(arg or {}) do
+		t[#t + 1] = v
+	end	
+	
+	return shell.execute(table.concat(t, " "))
+end
 
 function shell.execute(cmd)
 	log:os(cmd)
