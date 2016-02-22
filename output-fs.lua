@@ -6,15 +6,15 @@ Output_fs = inheritsFrom(OutputInterface)
 function Output_fs:new(config) 
 	local inst = Output_fs:create()
 	inst:init(config)
-	config.stats = {
-		count = 0,
-		bytes = 0,
-	}
 	return inst
 end
 
 function Output_fs:init(config) 
 	self.name = "fs"
+	self.stats = {
+		count = 0,
+		bytes = 0,
+	}
 	OutputInterface.init(self, config)
 	shell.createDirectory(self.config.dir)
 end
