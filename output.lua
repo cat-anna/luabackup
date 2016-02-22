@@ -42,25 +42,23 @@ function Output:putLogFile(file)
 	end
 end
 
-
 function Output:onBeforeStart()
 	for i,v in ipairs(self.outputs) do
-		v:onBeforeStart()
+		v.instance:onBeforeStart()
 	end
 end
 
 function Output:onAfterStop()
 	for i,v in ipairs(self.outputs) do
-		v:onAfterStop()
+		v.instance:onAfterStop()
 	end
 end
 
 function Output:onSummary()
 	for i,v in ipairs(self.outputs) do
-		v:onSummary()
+		v.instance:onSummary()
 	end
 end
-
 
 output = Output_create()
 
@@ -123,19 +121,19 @@ end
 function OutputInterface:onBeforeStart()
 	if self.triggers.onBeforeStart then
 		log:info(self, "Executing trigger ", onBeforeStart)
-		self.triggers.onBeforeStart();
+		self.triggers.onBeforeStart()
 	end
 end
 
 function OutputInterface:onAfterStop()
 	if self.triggers.onAfterStop then
 		log:info(self, "Executing trigger ", onAfterStop)
-		self.triggers.onAfterStop();
+		self.triggers.onAfterStop()
 	end
 end
 
 function OutputInterface:onSummary()
 	if self.triggers.onAfterStop then
-		self.triggers.onSummary();
+		self.triggers.onSummary()
 	end
 end
