@@ -6,6 +6,10 @@ Output_fs = inheritsFrom(OutputInterface)
 function Output_fs:new(config) 
 	local inst = Output_fs:create()
 	inst:init(config)
+	config.stats = {
+		count = 0,
+		bytes = 0,
+	}
 	return inst
 end
 
@@ -33,6 +37,8 @@ function Output_fs:processFile(file, islog)
 		shell.copy(file, outfile)
 	end 
 	
+	self.stats.count = self.stats.count + 1
+	
 	if islog and self.triggers.logFile then
 		self.triggers.logFile(outfile)
 	end
@@ -42,6 +48,11 @@ function Output_fs:put(file)
 	self:processFile(file, false)
 end
 
-function OutputInterface:putLog(file)
+function Output_fs:putLog(file)
 	self:processFile(file, true)
+end
+
+function Output_fs:onSummary()
+	OutputInterface.onSummary(self)
+	log:info(this, "Total files copied: ", self.stats.count)
 end

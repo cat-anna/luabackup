@@ -98,7 +98,7 @@ function BackupEngine:processInput(index, inp)
 	log:info("Input '" .. instance:getName() .. "' returned " .. #paths .. " path(s)")
 	local i, v
 	for i,v in ipairs(paths) do
-		log:info(string.format("Processing path %d out od %d: %s (%s)", i, #paths, v.name, v.path))
+		log:info(string.format("Processing path %d out of %d: %s (%s)", i, #paths, v.name, v.path))
 		
 		local files = { }
 
