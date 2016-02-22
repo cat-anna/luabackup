@@ -12,13 +12,13 @@ local function Input_create()
 end
 
 function Input:add(inp, pipename)
-    if not pipeline then 
+    if not pipename then 
 		log:warning("No pipeline defiend for '" .. inp:getName() .. "' default will be used")
 	end
 	
 	self.inputs[#self.inputs + 1] = { 
 		instance = inp, 
-		pipeline = name,
+		pipeline = pipename,
 	}
 end
 
