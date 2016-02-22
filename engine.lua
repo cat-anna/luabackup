@@ -156,7 +156,9 @@ function BackupEngine:start()
 	log:warning("Default pipeline: " .. pipelines:getDefaultPipeline())
     log:info "Backup started"
 	
-	input:processAll();
+	output:onBeforeStart()
+	input:processAll()
+	output:onAfterStop()
 	
 	log:info "Backup finished"
 	self:storeState()

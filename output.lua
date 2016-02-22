@@ -42,6 +42,26 @@ function Output:putLogFile(file)
 	end
 end
 
+
+function Output:onBeforeStart()
+	for i,v in ipairs(self.outputs) do
+		v:onBeforeStart()
+	end
+end
+
+function Output:onAfterStop()
+	for i,v in ipairs(self.outputs) do
+		v:onAfterStop()
+	end
+end
+
+function Output:onSummary()
+	for i,v in ipairs(self.outputs) do
+		v:onSummary()
+	end
+end
+
+
 output = Output_create()
 
 ---------------------------------------------
@@ -56,6 +76,12 @@ function OutputInterface:init(config)
 		self.name = config.name
 	end
 	self.config = config
+	
+	if config.triggers then
+		self.triggers = config.triggers
+	else
+		self.triggers = { }
+	end	
 	
 	if not config.mode then
 		self.mode = { backup = "y" }
@@ -92,4 +118,24 @@ function OutputInterface:put(file)
 end
 
 function OutputInterface:putLog(file)
+end
+
+function OutputInterface:onBeforeStart()
+	if self.triggers.onBeforeStart then
+		log:info(self, "Executing trigger ", onBeforeStart)
+		self.triggers.onBeforeStart();
+	end
+end
+
+function OutputInterface:onAfterStop()
+	if self.triggers.onAfterStop then
+		log:info(self, "Executing trigger ", onAfterStop)
+		self.triggers.onAfterStop();
+	end
+end
+
+function OutputInterface:onSummary()
+	if self.triggers.onAfterStop then
+		self.triggers.onSummary();
+	end
 end

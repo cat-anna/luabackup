@@ -13,12 +13,6 @@ function Output_fs:init(config)
 	self.name = "fs"
 	OutputInterface.init(self, config)
 	shell.createDirectory(self.config.dir)
-	
-	if config.triggers then
-		self.triggers = config.triggers
-	else
-		self.triggers = { }
-	end
 end
 
 function Output_fs:processFile(file, islog)
