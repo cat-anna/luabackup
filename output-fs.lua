@@ -3,6 +3,13 @@
 
 Output_fs = inheritsFrom(OutputInterface)
 
+function fsize (filename)
+	local file = io.open(filename)
+	local size = file:seek("end")    -- get file size
+	file:close()
+	return size
+end
+
 function Output_fs:new(config) 
 	local inst = Output_fs:create()
 	inst:init(config)
@@ -38,6 +45,7 @@ function Output_fs:processFile(file, islog)
 	end 
 	
 	self.stats.count = self.stats.count + 1
+	self.stats.bytes = self.stats.bytes + fsize(outfile)
 	
 	if islog and self.triggers.logFile then
 		self.triggers.logFile(outfile)
@@ -54,5 +62,5 @@ end
 
 function Output_fs:onSummary()
 	OutputInterface.onSummary(self)
-	log:info(this, "Total files copied: ", self.stats.count)
+	log:info(self, "Total files copied: ", self.stats.count, " (", self.stats.bytes / 1024 / 1024, " MiB )")
 end
