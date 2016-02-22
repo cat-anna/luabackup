@@ -4,7 +4,7 @@
 Output_scp = inheritsFrom(OutputInterface)
 
 function Output_scp:new(config) 
-	local inst = Output_fs:create()
+	local inst = Output_scp:create()
 	inst:init(config)
 	return inst
 end
