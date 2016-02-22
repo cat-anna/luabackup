@@ -53,6 +53,7 @@ function Pipelines:register(name, stages)
 		log:error(self, "Overriding pipelines is forbidden (", name, ")")
 		return
 	end
+	log:info(self, "Registered pipeline: " .. name)
 	self.pipelines[name] = stages
 end
 
@@ -66,9 +67,9 @@ function Pipelines:get(name)
 	if name then
 		n = self.pipelines[name]
 		if n then
-			Executor_create(n, name); 
+			return Executor_create(n, name); 
 		end
-		log:error(self, "There is no pipeline '", name, "'")
+		log:error(self, "There is no pipeline '", name, "', using default '", seld.defaultPipeline, "'")
 		return nil
 	end
 	
