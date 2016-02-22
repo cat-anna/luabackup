@@ -120,14 +120,14 @@ end
 
 function OutputInterface:onBeforeStart()
 	if self.triggers.onBeforeStart then
-		log:info(self, "Executing trigger ", onBeforeStart)
+		log:info(self, "Executing trigger onBeforeStart")
 		self.triggers.onBeforeStart()
 	end
 end
 
 function OutputInterface:onAfterStop()
 	if self.triggers.onAfterStop then
-		log:info(self, "Executing trigger ", onAfterStop)
+		log:info(self, "Executing trigger onAfterStop")
 		self.triggers.onAfterStop()
 	end
 end

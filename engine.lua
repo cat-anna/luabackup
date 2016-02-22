@@ -180,6 +180,8 @@ function BackupEngine:printSummary()
 		size = size + v.size 
 	end
 	log:info(string.format("Total: files: %d  size: %.2f Mib", #self.generatedFiles, size / 1024 / 1024))
+	output:onSummary()
+	
 end
 
 function BackupEngine:storeState() 
