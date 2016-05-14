@@ -20,10 +20,10 @@ function shell.buildcmd(cmd, argsdict, argtable, ...)
 		t[#t + 1] = v
 	end	
 	
-	for i,v in ipairs(arg or {}) do
+	for i,v in ipairs(arg or ... or {}) do
 		t[#t + 1] = v
 	end	
-	
+
 	return table.concat(t, " ")
 end
 
