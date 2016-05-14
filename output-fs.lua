@@ -55,5 +55,5 @@ end
 
 function Output_fs:onSummary()
 	OutputInterface.onSummary(self)
-	log:info(self, "Total files copied: ", self.stats.count, " (", string.format("%.2f", self.stats.bytes / 1024 / 1024), " MiB )")
+	log:info(self, "Total files copied: ", self.stats.count, " (", string.format("%.2f", self.stats.bytes / 1024 / 1024), " MiB)")
 end

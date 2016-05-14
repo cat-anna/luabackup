@@ -4,7 +4,7 @@
 local shell = { }
 _G["shell"] = shell
 
-function shell.start(cmd, argsdict, argtable, ...)
+function shell.buildcmd(cmd, argsdict, argtable, ...)
 	local t = { cmd }
 	
 	for k,v in pairs(argsdict or {}) do
@@ -24,7 +24,11 @@ function shell.start(cmd, argsdict, argtable, ...)
 		t[#t + 1] = v
 	end	
 	
-	return shell.execute(table.concat(t, " "))
+	return table.concat(t, " ")
+end
+
+function shell.start(cmd, argsdict, argtable, ...)
+	return shell.execute(shell.buildcmd(cmd, argsdict, argtable, unpack(arg)))
 end
 
 function shell.execute(cmd)
