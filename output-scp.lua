@@ -10,13 +10,19 @@ function Output_scp:new(config)
 end
 
 function Output_scp:ssh(cmd) 	
-	shell.start("ssh", self.argdict, self.argtable, cmd)
 	self.stats.connections = self.stats.connections + 1
+	shell.start("ssh", self.argdict, nil, self.destination, cmd)
 end
 
-function Output_scp:scp(cmd) 	
+function Output_scp:scp(localfile, remotefile) 	
 	self.stats.connections = self.stats.connections + 1
-	shell.start("ssh", self.argdict, self.argtable, cmd)
+	
+	local data = {
+		localfile,
+		self.destination .. ":" .. remotefile,
+	}
+	
+	shell.start("scp", self.argdict, data)
 end
 
 function Output_scp:init(config) 
@@ -32,37 +38,32 @@ function Output_scp:init(config)
 		p = config.connection.port,
 	}
 	
-	self.argtable = {
-		config.connection.user .. "@" .. config.connection.host
-	}	
+	self.destination = config.connection.user .. "@" .. config.connection.host
 	
 	self:ssh("mkdir -p '" .. config.dir .. "'")
 end
 
 function Output_scp:processFile(file, islog)
-	--local outdir
-	--local outfile
-	--if self.config.dir then
-	--	outdir = self.config.dir .. "/"
-	--else
-	--	outdir = "./"
-	--end
-	--		
-	--local index = file:find("/[^/]*$")
-	--outfile = outdir .. file:sub(index+1)		
-	--	
-	--if self.config.move then
-	--	shell.move(file, outfile)
-	--else
-	--	shell.copy(file, outfile)
-	--end 
-	--
-	--self.stats.count = self.stats.count + 1
-	--self.stats.bytes = self.stats.bytes + shell.fsize(outfile)
-	--
-	--if islog and self.triggers.logFile then
-	--	self.triggers.logFile(outfile)
-	--end
+	local outdir
+	local outfile
+	if self.config.dir then
+		outdir = self.config.dir .. "/"
+	else
+		outdir = "./"
+	end
+			
+	local index = file:find("/[^/]*$")
+	local fname = file:sub(index+1)		
+	local remotefile = outdir .. fname
+		
+	self:scp(file, remotefile)
+	
+	self.stats.count = self.stats.count + 1
+	self.stats.bytes = self.stats.bytes + shell.fsize(file)
+	
+	if islog and self.triggers.logFile then
+		self.triggers.logFile(remotefile)
+	end
 end
 
 function Output_scp:put(file)
@@ -75,5 +76,5 @@ end
 
 function Output_scp:onSummary()
 	OutputInterface.onSummary(self)
-	log:info(self, "Total files copied: ", self.stats.count, " (", string.format("%.2f", self.stats.bytes / 1024 / 1024), " MiB ); Connections made: ", self.stats.connections)
+	log:info(self, "Total files copied: ", self.stats.count, " (", string.format("%.2f", self.stats.bytes / 1024 / 1024), " MiB); Connections made: ", self.stats.connections)
 end
