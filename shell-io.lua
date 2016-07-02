@@ -20,7 +20,7 @@ function shell.buildcmd(cmd, argsdict, argtable, ...)
 		t[#t + 1] = v
 	end	
 	
-	for i,v in ipairs(... or arg or {}) do
+	for i,v in ipairs({...}) do
 		t[#t + 1] = v
 	end	
 
