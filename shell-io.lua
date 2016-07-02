@@ -20,7 +20,7 @@ function shell.start(cmd, argsdict, argtable, ...)
 		t[#t + 1] = v
 	end	
 	
-	for i,v in ipairs(arg or {}) do
+	for i,v in ipairs(... or arg or {}) do
 		t[#t + 1] = v
 	end	
 	
