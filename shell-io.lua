@@ -28,7 +28,7 @@ function shell.buildcmd(cmd, argsdict, argtable, ...)
 end
 
 function shell.start(cmd, argsdict, argtable, ...)
-	return shell.execute(shell.buildcmd(cmd, argsdict, argtable, unpack(arg)))
+	return shell.execute(shell.buildcmd(cmd, argsdict, argtable, ...))
 end
 
 function shell.execute(cmd)
