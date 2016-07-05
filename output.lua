@@ -54,9 +54,9 @@ function Output:onAfterStop()
 	end
 end
 
-function Output:onSummary()
+function Output:onSummary(summaryinfo)
 	for i,v in ipairs(self.outputs) do
-		v.instance:onSummary()
+		v.instance:onSummary(summaryinfo)
 	end
 end
 

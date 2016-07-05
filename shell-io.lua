@@ -16,6 +16,14 @@ function shell.buildcmd(cmd, argsdict, argtable, ...)
 		t[#t + 1] = v
 	end
 	
+	for k,v in ipairs(argsdict or {}) do
+		if k:len() > 1 then
+			t[#t + 1] = "-" .. k;
+		else
+			t[#t + 1] = "--" .. k;
+		end
+	end
+	
 	for i,v in ipairs(argtable or {}) do
 		t[#t + 1] = v
 	end	

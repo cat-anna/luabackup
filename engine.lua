@@ -180,14 +180,20 @@ function BackupEngine:printSummary()
 		size = size + v.size 
 	end
 	log:info(string.format("Total: files: %d  size: %.2f Mib", #self.generatedFiles, size / 1024 / 1024))
-	output:onSummary()
 	
+	sinfo = {
+		files = self.generatedFiles,
+		count = #self.generatedFiles,
+		size = size,
+	}
+	
+	output:onSummary(sinfo)
 end
 
 function BackupEngine:storeState() 
     local f = io.open(self.staticDataFile, "w")
     if not f then
-        log:error("Uable to open state file for writting")
+        log:error("Unable to open state file for writting")
         return
     end
 	log:info("Writting backup state")
