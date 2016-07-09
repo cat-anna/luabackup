@@ -18,7 +18,7 @@ function Stage_gzip:execute(files, fname)
 	local r = { }
 	for i,v in ipairs(files) do
 		local cmd = string.format("gzip %s", v)
-		shell.execute(cmd)
+		shell.WetExecute(cmd)
 		r[#r + 1] = v .. ".gz"
 	end
 	fname = fname .. ".gz"

@@ -39,6 +39,21 @@ function shell.start(cmd, argsdict, argtable, ...)
 	return shell.execute(shell.buildcmd(cmd, argsdict, argtable, ...))
 end
 
+function shell.WetStart(cmd, argsdict, argtable, ...)
+	local cmd = shell.buildcmd(cmd, argsdict, argtable, ...)
+	if luabackup.dryrun then
+		log:os('DRYRUN ', cmd)
+		return true
+	else
+		return shell.execute(cmd)
+	end
+end
+
+function shell.WetExecute(cmd)
+	log:os('DRYRUN ', cmd)
+	return true
+end
+
 function shell.execute(cmd)
 	log:os(cmd)
 	local file = io.popen(cmd)
@@ -129,11 +144,20 @@ function unix.createDirectory(path)
 	return shell.execute(cmd)
 end
 
+function unix.WetCreateDirectory(path)
+	local cmd = string.format("mkdir -p %s", path)
+	return shell.WetExecute(cmd)
+end
+
 function unix.removeFile(file)
 	local cmd = string.format("rm %s", file)
 	return shell.execute(cmd)
 end
 
+function unix.WetRemoveFile(file)
+	local cmd = string.format("rm %s", file)
+	return shell.WetExecute(cmd)
+end
 function unix.temp()
 	return "/tmp/"
 end

@@ -58,6 +58,10 @@ function BackupEngine:init(staticName, temp)
 	self.tmpPath = temp	
 	shell.createDirectory(temp)
 	
+	if luabackup.dryrun then
+		log:warning(NameString, " innitialized in DryRun mode")
+	end
+	
 	local f = io.open(self.staticDataFile, "rb")
     local static_ok = false
     if f then
@@ -137,7 +141,7 @@ function BackupEngine:processInput(index, inp)
 		output:putBackupFiles(files)
 		
 		for fi,fv in ipairs(files) do
-			shell.removeFile(fname)
+			shell.WetRemoveFile(fname)
 		end
 	end	
 end
@@ -151,6 +155,10 @@ function BackupEngine:start()
 		log:info("Incremental mode is on")
 	else
 		log:info("Incremental mode is off")
+	end
+	
+		if luabackup.dryrun then
+		log:warning(NameString, " executed in DryRun mode")
 	end
 
 	log:warning("Default pipeline: " .. pipelines:getDefaultPipeline())

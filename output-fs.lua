@@ -16,7 +16,7 @@ function Output_fs:init(config)
 		bytes = 0,
 	}
 	OutputInterface.init(self, config)
-	shell.createDirectory(self.config.dir)
+	shell.WetCreateDirectory(self.config.dir)
 end
 
 function Output_fs:processFile(file, islog)

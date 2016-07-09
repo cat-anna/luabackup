@@ -30,7 +30,7 @@ function Stage_ccrypt:execute(files, fname)
 	local r = { }
 	for i,v in ipairs(files) do
 		local fcmd = string.format("%s %s", cmd, v)
-		shell.execute(fcmd)
+		shell.WetExecute(fcmd)
 		r[#r + 1] = v .. ".cpt"
 	end
 	fname = fname .. ".cpt"

@@ -26,12 +26,17 @@ function Stage_tar:execute(files, fname)
 		fname = fname .. ".tar"
 		cmd = string.format("tar -cf %s -T -", fname)
 	end
-	local tar = shell.inputTo(cmd)
-	local i,v
-	for i,v in ipairs(files) do
-		tar:write(v, "\n")
+	if luabackup.dryrun then
+		shell.WetExecute(cmd)
+	else
+		local tar = shell.inputTo(cmd)
+		local i,v
+		for i,v in ipairs(files) do
+			tar:write(v, "\n")
+		end
+		tar:close()	
 	end
-	tar:close()
+
 	return { fname }, fname
 end
 

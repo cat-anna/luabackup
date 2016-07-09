@@ -11,7 +11,7 @@ end
 
 function Output_scp:ssh(cmd) 	
 	self.stats.connections = self.stats.connections + 1
-	shell.start("ssh", self.argdict, nil, self.destination, cmd)
+	shell.WetStart("wetssh", self.argdict, nil, self.destination, cmd)
 end
 
 function Output_scp:scp(localfile, remotefile) 	
@@ -22,7 +22,7 @@ function Output_scp:scp(localfile, remotefile)
 		self.destination .. ":" .. remotefile,
 	}
 	
-	shell.start("scp", self.argdict, data)
+	shell.WetStart("scp", self.argdict, data)
 end
 
 function Output_scp:init(config) 
