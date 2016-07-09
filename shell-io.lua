@@ -8,16 +8,16 @@ function shell.buildcmd(cmd, argsdict, argtable, ...)
 	local t = { cmd }
 	
 	for k,v in pairs(argsdict or {}) do
-		if k:len() > 1 then
+		if k:len() == 1 then
 			t[#t + 1] = "-" .. k;
 		else
 			t[#t + 1] = "--" .. k;
 		end
-		t[#t + 1] = v
+		t[#t + 1] = "'" .. v .. "'"
 	end
 	
 	for k,v in ipairs(argsdict or {}) do
-		if k:len() > 1 then
+		if k:len() == 1 then
 			t[#t + 1] = "-" .. k;
 		else
 			t[#t + 1] = "--" .. k;
@@ -50,8 +50,12 @@ function shell.WetStart(cmd, argsdict, argtable, ...)
 end
 
 function shell.WetExecute(cmd)
-	log:os('DRYRUN ', cmd)
-	return true
+	if luabackup.dryrun then
+		log:os('DRYRUN ', cmd)
+		return true
+	else
+		return shell.execute(cmd)
+	end
 end
 
 function shell.execute(cmd)
@@ -150,6 +154,11 @@ function unix.WetCreateDirectory(path)
 end
 
 function unix.removeFile(file)
+	local cmd = string.format("rm %s", file)
+	return shell.execute(cmd)
+end
+
+function unix.RemoveFile(file)
 	local cmd = string.format("rm %s", file)
 	return shell.execute(cmd)
 end

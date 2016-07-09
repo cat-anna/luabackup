@@ -45,6 +45,11 @@ function BackupEngine:buildBaseFileName(staticName)
 	return string.format("%s%s.%04d%02d%02d_%02d%02d%02d", bpath, staticName, d.year, d.month, d.day, d.hour, d.min, d.sec)
 end
 
+function BackupEngine:RegisterTempFile(fname)
+	log:info("Temp file registered: '" .. fname .. "'")
+	self.TempFiles[#self.TempFiles + 1] = fname
+end
+
 function BackupEngine:init(staticName, temp)
 	shell.init()
 	temp = temp or shell.temp()
@@ -57,6 +62,7 @@ function BackupEngine:init(staticName, temp)
 	self.staticDataFile = staticName
 	self.tmpPath = temp	
 	shell.createDirectory(temp)
+	self.TempFiles = { }
 	
 	if luabackup.dryrun then
 		log:warning(NameString, " innitialized in DryRun mode")
@@ -84,6 +90,62 @@ function BackupEngine:init(staticName, temp)
     end
 end
 
+
+function BackupEngine:RegisterOutputFile(fname)
+	self.generatedFiles[#self.generatedFiles + 1] = {
+		name = fname,
+		size = shell.fsize(fname)
+	}
+end
+
+function BackupEngine:ProcessInputEntryFile(pipeline, entry)
+	local file = entry.file
+	
+	local fname = self:buildBaseFileName(entry.name)
+	log:info("Backup file base name: '" .. fname .. "'")
+	
+	file, fname = pipeline:execute({ file }, fname)
+
+	self:RegisterOutputFile(fname)
+	output:putBackupFiles( file )
+	shell.WetRemoveFile(fname)
+end
+
+function BackupEngine:ProcessInputEntryPath(pipeline, entry)
+	local files = { }
+	local path_types = {
+		table = function(path)
+			files = path
+		end,
+		string = function(path) 
+			files = { path }
+		end
+	}
+
+	local path_func = path_types[type(entry.path)]
+	if path_func then
+		path_func(entry.path)
+	else
+		log:error("Invalid path type!")
+	end
+	
+	local fname = self:buildBaseFileName(entry.name)
+	log:info("Backup file base name: ", fname, " input file(s) count: " , #files)
+	
+	files, fname = pipeline:execute(files, fname)
+	
+	local fi,fv
+	for fi,fv in ipairs(files) do
+		self:RegisterOutputFile(fv)
+	end
+	
+	output:putBackupFiles(files)
+	
+	for fi,fv in ipairs(files) do
+		shell.WetRemoveFile(fv)
+	end
+end
+
 function BackupEngine:processInput(index, inp)
 	local instance = inp.instance
 	log:info("Starting processing input '" .. instance:getName() .. "' (" .. index .. " out of " .. input:getInputCount() .. ")")
@@ -100,48 +162,27 @@ function BackupEngine:processInput(index, inp)
 	end
 	
 	log:info("Input '" .. instance:getName() .. "' returned " .. #paths .. " path(s)")
-	local i, v
-	for i,v in ipairs(paths) do
-		log:info(string.format("Processing path %d out of %d: %s (%s)", i, #paths, v.name, v.path))
+	for i,entry in ipairs(paths) do
+		log:info(string.format("Processing entry %d out of %d: %s", i, #paths, entry.name))
 		
-		local files = { }
-
-		local path_types = {
-			table = function(t, path)
-				local i,v
-				for i,v in ipairs(path) do
-					t[#t + 1] = v
-				end
-			end,
-			string = function(t, path) 
-				t[#t + 1] = path
-			end
-		}
-
-		local path_func = path_types[type(v.path)]
-		if path_func then
-			path_func(files, v.path)
-		else
-			log:error("Invalid path type!")
+		local handler
+		
+		if not entry.name then
+			entry.name = instance:getName() .. string.format("_entry%d", i)
+			log:warning("Input returned nameless entry. Name set to '" .. entry.name .. "'")
 		end
 		
-		local fname = self:buildBaseFileName(v.name)
-		log:info("Backup file base name: ", fname, " input file(s) count: " , #files)
-		
-		files, fname = pipeline:execute(files, fname)
-		
-		local fi,fv
-		for fi,fv in ipairs(files) do
-			self.generatedFiles[#self.generatedFiles + 1] = {
-				name = fv,
-				size = shell.fsize(fv)
-			}
-		end
-		
-		output:putBackupFiles(files)
-		
-		for fi,fv in ipairs(files) do
-			shell.WetRemoveFile(fname)
+		if #entry > 2 then
+			log:error("Invalid entry: '" .. entry.name .. "' - invalid entry source")
+			
+		else		
+			if entry.path then
+				self:ProcessInputEntryPath(pipeline, entry)
+			elseif entry.file then
+				self:ProcessInputEntryFile(pipeline, entry)
+		--	elseif entry.directory then
+		--		ProcessInputEntryDirectory(entry)
+			end 
 		end
 	end	
 end
@@ -172,6 +213,8 @@ function BackupEngine:start()
 	self:storeState()
 	self:printSummary()
 	
+	self:Clear()
+	
 	log:closeLog()
 	output:putLogFile(log:getLogFile())
 	log:removeLogFile()
@@ -196,6 +239,14 @@ function BackupEngine:printSummary()
 	}
 	
 	output:onSummary(sinfo)
+end
+
+function BackupEngine:Clear()
+	for i,v in ipairs(self.TempFiles) do
+		log:info("Removing temp file: '", v, "'")
+		shell.RemoveFile(v)
+	end
+	self.TempFiles = { }
 end
 
 function BackupEngine:storeState() 
