@@ -237,8 +237,10 @@ function BackupEngine:printSummary()
 		count = #self.generatedFiles,
 		size = size,
 	}
+  
+  sinfo.DynamicSize = string.format("%.2f", sinfo.size / 1024 / 1024)
 	
-	output:onSummary(sinfo)
+	output:OnSummary(sinfo)
 end
 
 function BackupEngine:Clear()

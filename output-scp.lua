@@ -60,10 +60,6 @@ function Output_scp:processFile(file, islog)
 	
 	self.stats.count = self.stats.count + 1
 	self.stats.bytes = self.stats.bytes + shell.fsize(file)
-	
-	if islog and self.triggers.logFile then
-		self.triggers.logFile(remotefile)
-	end
 end
 
 function Output_scp:put(file)
@@ -72,9 +68,10 @@ end
 
 function Output_scp:putLog(file)
 	self:processFile(file, true)
+  OutputInterface.OnSummary(self, file)
 end
 
-function Output_scp:onSummary()
-	OutputInterface.onSummary(self)
+function Output_scp:OnSummary(info)
+	OutputInterface.OnSummary(self, info)
 	log:info(self, "Total files copied: ", self.stats.count, " (", string.format("%.2f", self.stats.bytes / 1024 / 1024), " MiB); Connections made: ", self.stats.connections)
 end

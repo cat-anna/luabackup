@@ -54,9 +54,9 @@ function Output:onAfterStop()
 	end
 end
 
-function Output:onSummary(summaryinfo)
+function Output:OnSummary(summaryinfo)
 	for i,v in ipairs(self.outputs) do
-		v.instance:onSummary(summaryinfo)
+		v.instance:OnSummary(summaryinfo)
 	end
 end
 
@@ -116,24 +116,27 @@ function OutputInterface:put(file)
 end
 
 function OutputInterface:putLog(file)
+	if self.triggers.OnLogFile then
+		self.triggers.OnLogFile(self, file)
+	end
 end
 
 function OutputInterface:onBeforeStart()
 	if self.triggers.onBeforeStart then
 		log:info(self, "Executing trigger onBeforeStart")
-		self.triggers.onBeforeStart()
+		self.triggers.onBeforeStart(self)
 	end
 end
 
 function OutputInterface:onAfterStop()
 	if self.triggers.onAfterStop then
 		log:info(self, "Executing trigger onAfterStop")
-		self.triggers.onAfterStop()
+		self.triggers.onAfterStop(self)
 	end
 end
 
-function OutputInterface:onSummary()
-	if self.triggers.onAfterStop then
-		self.triggers.onSummary()
+function OutputInterface:OnSummary(info)
+	if self.triggers.OnSummary then
+		self.triggers.OnSummary(self, info)
 	end
 end

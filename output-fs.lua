@@ -39,10 +39,6 @@ function Output_fs:processFile(file, islog)
 	
 	self.stats.count = self.stats.count + 1
 	self.stats.bytes = self.stats.bytes + shell.fsize(outfile)
-	
-	if islog and self.triggers.logFile then
-		self.triggers.logFile(outfile)
-	end
 end
 
 function Output_fs:put(file)
@@ -51,9 +47,10 @@ end
 
 function Output_fs:putLog(file)
 	self:processFile(file, true)
+  OutputInterface.OnSummary(self, file)
 end
 
-function Output_fs:onSummary()
-	OutputInterface.onSummary(self)
+function Output_fs:OnSummary(info)
+	OutputInterface.OnSummary(self, info)
 	log:info(self, "Total files copied: ", self.stats.count, " (", string.format("%.2f", self.stats.bytes / 1024 / 1024), " MiB)")
 end
