@@ -68,7 +68,7 @@ end
 
 function Output_scp:putLog(file)
 	self:processFile(file, true)
-  OutputInterface.OnLogFile(self, file)
+  OutputInterface.putLog(self, file)
 end
 
 function Output_scp:OnSummary(info)
