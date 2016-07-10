@@ -238,7 +238,7 @@ function BackupEngine:printSummary()
 		size = size,
 	}
   
-  sinfo.DynamicSize = string.format("%.2f", sinfo.size / 1024 / 1024)
+  sinfo.DynamicSize = string.format("%.2f Mb", sinfo.size / 1024 / 1024)
 	
 	output:OnSummary(sinfo)
 end
