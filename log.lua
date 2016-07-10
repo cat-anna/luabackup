@@ -54,7 +54,9 @@ local Log = {}
 local Log_mt = { __index = Log }
 
 function Log:create()
-    local new_inst = {}  
+    local new_inst = {
+		buffer = { }
+	}  
     setmetatable( new_inst, Log_mt )
     return new_inst
 end
@@ -72,6 +74,12 @@ function Log:openLog(dir)
 	local fn = string.format("%sluabackup_%04d%02d%02d_%02d%02d%02d.log", dir, d.year, d.month, d.day, d.hour, d.min, d.sec)	
 	self.file = io.open(fn, "w")
 	self.logFile = fn
+	
+	if self.buffer then
+		for i,v in ipairs(self.buffer) do
+			self.file:write(v, "\n")
+		end
+	end
 end
 
 function Log:closeLog()
@@ -110,6 +118,7 @@ function Log:print(...)
 	if self.file then
 		self.file:write(line, "\n")
 	end
+	self.buffer[#self.buffer + 1] = line
 	print(line)
 end
 
