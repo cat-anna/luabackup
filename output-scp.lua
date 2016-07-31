@@ -61,7 +61,7 @@ function Output_scp:processFile(file, islog)
 	self.stats.count = self.stats.count + 1
 	self.stats.bytes = self.stats.bytes + shell.fsize(file)
 	
-	return file
+	return remotefile
 end
 
 function Output_scp:put(file)
