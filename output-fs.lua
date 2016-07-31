@@ -39,6 +39,8 @@ function Output_fs:processFile(file, islog)
 	
 	self.stats.count = self.stats.count + 1
 	self.stats.bytes = self.stats.bytes + shell.fsize(outfile)
+	
+	return outfile
 end
 
 function Output_fs:put(file)
@@ -46,8 +48,8 @@ function Output_fs:put(file)
 end
 
 function Output_fs:putLog(file)
-	self:processFile(file, true)
-  OutputInterface.putLog(self, file)
+	local remotef = self:processFile(file, true)
+	OutputInterface.putLog(self, remotef)
 end
 
 function Output_fs:OnSummary(info)
