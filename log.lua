@@ -53,11 +53,19 @@ console = setmetatable({}, console_mt)
 local Log = {}
 local Log_mt = { __index = Log }
 
-function Log:create()
+function Log:create(prev_log)
     local new_inst = {
 		buffer = { }
 	}  
-    setmetatable( new_inst, Log_mt )
+    setmetatable( new_inst, Log_mt )	
+	
+	if type(prev_log) == "table" then
+		if type(prev_log.buffer) == "table" then
+			new_inst.buffer = prev_log.buffer
+			self:info("Inherited buffer after previous logger instance")
+		end
+	end
+
     return new_inst
 end
 
@@ -164,4 +172,4 @@ function Log:warning(...)
 	self:print(log_common("warning"), ...)
 end
 
-log = Log:create()
+log = Log:create(log)
