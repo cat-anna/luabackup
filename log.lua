@@ -62,7 +62,7 @@ function Log:create(prev_log)
 	if type(prev_log) == "table" then
 		if type(prev_log.buffer) == "table" then
 			new_inst.buffer = prev_log.buffer or { }
-			self:info("Inherited buffer after previous logger instance")
+			new_inst:info("Inherited buffer after previous logger instance")
 		end
 	end
 
